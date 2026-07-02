@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANC New Job Lucky Reward — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#071230; --navy2:#0B1B45; --panel:rgba(255,255,255,.055);
+  --panel-br:rgba(255,255,255,.14); --blue:#2E7CF6; --blue2:#5EA2FF; --sky:#8FC3FF;
+  --gold:#FFB930; --gold2:#FFD070; --red:#E8404B;
+  --text:#F4F7FF; --muted:#9FB0D8; --ok:#3DDC97; --warn:#FFB930; --bad:#FF6B7A;
+  --r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Prompt','Noto Sans Thai',system-ui,sans-serif; color:var(--text);
+  background:
+    radial-gradient(900px 500px at 85% -5%, rgba(46,124,246,.28), transparent 60%),
+    radial-gradient(700px 420px at -10% 30%, rgba(94,162,255,.14), transparent 60%),
+    linear-gradient(180deg,var(--navy2),var(--navy) 60%);
+  min-height:100vh;
+}
+a{color:var(--blue2)}
+.wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+
+/* ============ prototype bar ============ */
+.proto{
+  position:sticky; top:0; z-index:90; display:flex; align-items:center; gap:10px;
+  padding:8px 16px; background:rgba(4,8,24,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08); font-size:12.5px; flex-wrap:wrap;
+}
+.proto .tag{background:var(--red); color:#fff; font-weight:700; border-radius:6px; padding:2px 8px; letter-spacing:.5px}
+.proto .route{color:var(--muted); font-family:monospace}
+.proto .grow{flex:1}
+.pbtn{
+  font-family:inherit; font-size:12.5px; cursor:pointer; color:var(--text);
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
+  border-radius:99px; padding:5px 14px;
+}
+.pbtn.active{background:var(--blue); border-color:var(--blue)}
+.state-panel{
+  position:fixed; right:14px; top:52px; z-index:95; width:250px; display:none;
+  background:#0d1735; border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:14px;
+  box-shadow:0 18px 50px rgba(0,0,0,.5); font-size:13px;
+}
+.state-panel.show{display:block}
+.state-panel h4{font-size:12px; color:var(--muted); margin-bottom:10px; letter-spacing:.6px}
+.state-panel label{display:flex; justify-content:space-between; align-items:center; padding:7px 0; cursor:pointer; gap:8px}
+.sw{position:relative; width:36px; height:20px; background:#2a355e; border-radius:99px; transition:.2s; flex:0 0 auto}
+.sw::after{content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:.2s}
+input:checked + .sw{background:var(--blue)} input:checked + .sw::after{left:18px}
+.state-panel input{display:none}
+.state-panel .row-btns{display:flex; gap:6px; margin-top:8px}
+.state-panel .row-btns .pbtn{flex:1; text-align:center}
+
+/* ============ header ============ */
+header.site{display:flex; align-items:center; justify-content:space-between; padding:18px 0}
+.logo{display:flex; align-items:center; gap:11px; font-weight:700; font-size:19px}
+.logo .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--blue),#1b4fd8); box-shadow:0 6px 18px rgba(46,124,246,.45)}
+.logo small{color:var(--muted); font-weight:400; font-size:13px}
+.userchip{display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--panel-br);
+  border-radius:99px; padding:7px 14px 7px 8px; font-size:13.5px}
+.userchip .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ff8a5c);
+  display:grid;place-items:center;font-weight:700;color:#4a2e00;font-size:13px}
+
+/* ============ glass card base ============ */
+.card{background:var(--panel); border:1px solid var(--panel-br); border-radius:var(--r);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px)}
+
+/* ============ hero ============ */
+.hero{display:grid; grid-template-columns:1.15fr .85fr; gap:30px; align-items:center; padding:26px 0 10px}
+.campaign-pill{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600;
+  background:linear-gradient(90deg,rgba(232,64,75,.18),rgba(255,185,48,.14)); border:1px solid rgba(232,64,75,.45);
+  color:#ffd7da; border-radius:99px; padding:5px 14px; margin-bottom:14px}
+.campaign-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--red); box-shadow:0 0 10px var(--red); animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.4}}
+.hero h1{font-size:clamp(27px,3.6vw,44px); font-weight:800; line-height:1.28}
+.hero h1 .hl{background:linear-gradient(92deg,var(--gold2),var(--gold) 55%,#ff9d3c);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{color:var(--muted); margin-top:12px; font-size:15.5px; max-width:54ch; line-height:1.7}
+.cta-row{display:flex; gap:12px; margin-top:22px; flex-wrap:wrap}
+.btn{font-family:inherit; border:none; cursor:pointer; border-radius:13px; font-weight:600; transition:transform .12s, box-shadow .12s}
+.btn:active{transform:scale(.97)}
+.btn-primary{font-size:16px; padding:14px 30px; color:#fff;
+  background:linear-gradient(135deg,var(--blue2),var(--blue) 60%,#1b4fd8);
+  box-shadow:0 10px 28px rgba(46,124,246,.45), inset 0 1px 0 rgba(255,255,255,.35)}
+.btn-primary:hover{box-shadow:0 12px 34px rgba(46,124,246,.6)}
+.btn-ghost{font-size:15px; padding:13px 26px; color:var(--text); background:rgba(255,255,255,.07); border:1px solid var(--panel-br)}
+.btn-gold{font-size:17px; padding:15px 40px; color:#3d2a00;
+  background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,#f09a00);
+  box-shadow:0 10px 30px rgba(255,185,48,.4), inset 0 1px 0 rgba(255,255,255,.6)}
+.btn:disabled{filter:grayscale(.7); opacity:.55; cursor:not-allowed}
+.hero .tiny{margin-top:14px; font-size:13px; color:var(--muted)}
+.hero .tiny b{color:var(--sky)}
+
+/* SKY mascot */
+.mascot-box{display:flex; justify-content:center; position:relative}
+.mascot-box .glow{position:absolute; inset:10% 18%; background:radial-gradient(closest-side, rgba(94,162,255,.35), transparent 70%); filter:blur(8px)}
+.mascot{position:relative; animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.sign{position:absolute; top:-34px; right:-36px; background:#fff; color:#12336b; font-weight:700; font-size:13.5px;
+  padding:9px 14px; border-radius:14px 14px 14px 3px; transform:rotate(4deg); z-index:3;
+  box-shadow:0 10px 24px rgba(0,0,0,.35); border:2px solid var(--sky)}
+.sign::after{content:'💙 SKY'; display:block; font-size:10px; color:var(--blue); font-weight:600; margin-top:2px}
+
+/* ============ grand prize highlight ============ */
+.grand{margin-top:26px; padding:22px 26px; display:flex; align-items:center; gap:20px; position:relative; overflow:hidden;
+  border:1px solid rgba(255,185,48,.4);
+  background:linear-gradient(100deg, rgba(255,185,48,.12), rgba(255,255,255,.04) 45%)}
+.grand::before{content:''; position:absolute; top:-60%; left:-20%; width:50%; height:220%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.09), transparent); transform:rotate(8deg);
+  animation:sheen 4.5s infinite}
+@keyframes sheen{0%{left:-40%}60%,100%{left:120%}}
+.grand .medal{font-size:44px; filter:drop-shadow(0 6px 14px rgba(255,185,48,.5))}
+.grand h3{font-size:19px; font-weight:700}
+.grand h3 b{color:var(--gold)}
+.grand p{font-size:13.5px; color:var(--muted); margin-top:3px}
+.grand .pill{margin-left:auto; font-size:13px; font-weight:600; border-radius:99px; padding:8px 18px; white-space:nowrap}
+.grand .pill.avail{background:rgba(61,220,151,.14); color:var(--ok); border:1px solid rgba(61,220,151,.4)}
+.grand .pill.claimed{background:rgba(255,255,255,.08); color:var(--muted); border:1px solid var(--panel-br)}
+
+/* ============ reveal section ============ */
+.reveal-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:26px; align-items:stretch}
+.reveal-card{padding:34px 30px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:18px; position:relative; overflow:hidden}
+.reveal-card h2{font-size:21px; font-weight:700}
+.reveal-card .desc{color:var(--muted); font-size:14px; max-width:40ch}
+.token-chip{display:inline-flex; align-items:center; gap:8px; background:rgba(46,124,246,.16); border:1px solid rgba(46,124,246,.5);
+  border-radius:99px; padding:7px 18px; font-size:14px; color:var(--sky)}
+.token-chip b{color:#fff; font-size:16px}
+
+/* premium reward wheel — clean corporate style */
+.wheel-wrap{position:relative; width:min(330px,80vw); aspect-ratio:1; margin:10px 0 4px}
+.wheel-glow{position:absolute; inset:-12%; border-radius:50%; pointer-events:none;
+  background:radial-gradient(closest-side, rgba(46,124,246,.32), transparent 70%); filter:blur(6px);
+  animation:wglow 3.4s ease-in-out infinite}
+@keyframes wglow{50%{opacity:.5}}
+.wheel-ring{position:absolute; inset:-8px; border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(94,162,255,.95), rgba(255,185,48,.9) 30%, rgba(94,162,255,.95) 60%, rgba(255,208,112,.9) 82%, rgba(94,162,255,.95));
+  box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.wheel-ring::after{content:''; position:absolute; inset:5px; border-radius:50%; background:#0C1A42}
+#wheelSvg{position:absolute; inset:7px; width:calc(100% - 14px); height:calc(100% - 14px); z-index:2;
+  transition:transform 4.8s cubic-bezier(.14,.85,.16,1)}
+.wheel-pointer{position:absolute; top:-12px; left:50%; transform:translateX(-50%); z-index:6;
+  width:0; height:0; border-left:13px solid transparent; border-right:13px solid transparent;
+  border-top:24px solid var(--gold); filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+.wheel-hub{position:absolute; inset:0; margin:auto; z-index:5; width:80px; height:80px; border-radius:50%;
+  display:grid; place-items:center; text-align:center; font-weight:800; font-size:14px; line-height:1.2; color:#fff;
+  background:linear-gradient(150deg,var(--blue2),#1b4fd8); border:3px solid rgba(255,255,255,.28);
+  box-shadow:0 0 0 6px #0C1A42, 0 0 28px rgba(46,124,246,.6)}
+.wheel-hub small{display:block; font-size:9px; font-weight:600; color:#cfe3ff; letter-spacing:.3px}
+
+/* bonus mode banner (positive) */
+.bonus-note{display:none; align-items:center; gap:10px; font-size:13.5px; text-align:left;
+  background:rgba(94,162,255,.12); border:1px solid rgba(94,162,255,.4); border-radius:13px; padding:11px 16px; color:#cfe3ff}
+.bonus-note.show{display:flex}
+
+/* how-to side */
+.howto{padding:28px 30px; display:flex; flex-direction:column; gap:6px}
+.howto h3{font-size:17px; font-weight:700; margin-bottom:10px}
+ol.steps{list-style:none; counter-reset:s; display:flex; flex-direction:column; gap:14px}
+ol.steps li{counter-increment:s; display:flex; gap:13px; font-size:14px; color:#d5ddf3; line-height:1.55}
+ol.steps li::before{content:counter(s); flex:0 0 27px; height:27px; border-radius:9px; font-size:13px; font-weight:700;
+  background:linear-gradient(135deg,var(--blue2),var(--blue)); display:grid; place-items:center; box-shadow:0 4px 12px rgba(46,124,246,.4)}
+.moti{margin-top:auto; padding-top:16px; display:flex; flex-wrap:wrap; gap:8px}
+.moti span{font-size:12px; color:var(--sky); background:rgba(46,124,246,.12); border:1px solid rgba(46,124,246,.35); border-radius:99px; padding:5px 12px}
+
+/* ============ sections ============ */
+.section{margin-top:34px}
+.section > h2{font-size:21px; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:10px}
+.section > .sub{color:var(--muted); font-size:13.5px; margin-bottom:16px}
+
+/* wallet */
+.wallet-cards{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.wcard{padding:18px; border-radius:16px}
+.wcard .l{font-size:12.5px; color:var(--muted)}
+.wcard .v{font-size:25px; font-weight:800; margin-top:4px}
+.wcard .v small{font-size:13px; font-weight:500; color:var(--muted)}
+.wcard.points .v{color:var(--sky)} .wcard.pending .v{color:var(--warn)} .wcard.approved .v{color:var(--ok)} .wcard.paid .v{color:#fff}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th{font-size:12px; color:var(--muted); font-weight:600; text-align:left; padding:11px 14px; border-bottom:1px solid var(--panel-br); letter-spacing:.4px; white-space:nowrap}
+td{padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.tbl{overflow-x:auto; border-radius:var(--r)}
+.chip{display:inline-block; font-size:11.5px; font-weight:600; border-radius:99px; padding:3px 11px}
+.chip.pending{background:rgba(255,185,48,.15); color:var(--warn); border:1px solid rgba(255,185,48,.4)}
+.chip.approved{background:rgba(61,220,151,.13); color:var(--ok); border:1px solid rgba(61,220,151,.4)}
+.chip.paid{background:rgba(94,162,255,.15); color:var(--sky); border:1px solid rgba(94,162,255,.45)}
+.chip.rejected{background:rgba(255,107,122,.13); color:var(--bad); border:1px solid rgba(255,107,122,.4)}
+.chip.normal{background:rgba(255,255,255,.07); color:var(--muted); border:1px solid var(--panel-br)}
+.chip.warning{background:rgba(255,185,48,.15); color:var(--warn); border:1px solid rgba(255,185,48,.4)}
+.chip.suspicious{background:rgba(255,107,122,.13); color:var(--bad); border:1px solid rgba(255,107,122,.4)}
+.chip.blocked{background:var(--red); color:#fff}
+.chip.review{background:rgba(94,162,255,.15); color:var(--sky); border:1px solid rgba(94,162,255,.45)}
+.amt-gold{color:var(--gold); font-weight:700}
+.amt-pt{color:var(--sky); font-weight:700}
+
+/* leaderboard */
+.tabs{display:flex; gap:8px; margin-bottom:14px}
+.tab{font-family:inherit; font-size:13.5px; cursor:pointer; color:var(--muted); background:rgba(255,255,255,.05);
+  border:1px solid var(--panel-br); border-radius:99px; padding:7px 20px}
+.tab.active{background:var(--blue); border-color:var(--blue); color:#fff; font-weight:600}
+.rank-badge{width:26px; height:26px; border-radius:8px; display:inline-grid; place-items:center; font-weight:800; font-size:13px}
+.rk1{background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#4a2e00}
+.rk2{background:linear-gradient(135deg,#e8eef8,#b9c6dd); color:#33415c}
+.rk3{background:linear-gradient(135deg,#ffc19a,#e78a52); color:#5c2f10}
+.rkx{background:rgba(255,255,255,.08); color:var(--muted)}
+.badge-tag{font-size:11px; font-weight:600; border-radius:8px; padding:3px 9px; background:rgba(255,185,48,.13); color:var(--gold); border:1px solid rgba(255,185,48,.35)}
+.badge-tag.b{background:rgba(94,162,255,.13); color:var(--sky); border-color:rgba(94,162,255,.4)}
+.badge-tag.g{background:rgba(61,220,151,.12); color:var(--ok); border-color:rgba(61,220,151,.4)}
+
+/* rules */
+.rules{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.rule{display:flex; gap:12px; align-items:flex-start; padding:15px 17px; font-size:13.5px; color:#d5ddf3; line-height:1.6}
+.rule .ic{flex:0 0 auto; width:24px; height:24px; border-radius:8px; background:rgba(61,220,151,.15); color:var(--ok);
+  display:grid; place-items:center; font-size:13px}
+.terms{margin-top:14px; padding:18px 22px; font-size:12.5px; color:var(--muted); line-height:1.8}
+.terms b{color:#cfd9f5}
+
+/* empty state */
+.empty{display:none; text-align:center; padding:40px 20px; color:var(--muted); font-size:14px}
+.empty .big{font-size:38px; margin-bottom:10px}
+.empty-mode .empty{display:block}
+.empty-mode .hide-when-empty{display:none !important}
+
+/* ============ result modal ============ */
+.overlay{position:fixed; inset:0; z-index:100; background:rgba(3,7,22,.8); backdrop-filter:blur(6px); display:none; place-items:center; padding:20px}
+.overlay.show{display:grid}
+.modal{width:min(430px,94vw); border-radius:24px; padding:38px 34px; text-align:center; position:relative;
+  background:linear-gradient(170deg,#14275e,#0c1a42); border:1px solid rgba(94,162,255,.4); box-shadow:0 30px 80px rgba(0,0,0,.6); animation:mpop .35s}
+@keyframes mpop{from{transform:scale(.9); opacity:0}}
+.modal .em{font-size:50px}
+.modal h3{font-size:21px; font-weight:700; margin-top:10px}
+.modal .big-amt{font-size:52px; font-weight:800; margin:6px 0;
+  background:linear-gradient(92deg,var(--gold2),var(--gold),#ff9d3c); -webkit-background-clip:text; background-clip:text; color:transparent}
+.modal .big-amt.pt{background:linear-gradient(92deg,#cfe5ff,var(--blue2)); -webkit-background-clip:text; background-clip:text}
+.modal p{font-size:13.5px; color:var(--muted); line-height:1.7}
+.modal .mrow{display:flex; gap:10px; justify-content:center; margin-top:22px; flex-wrap:wrap}
+.confetti{position:fixed; top:-14px; z-index:120; animation:fall linear forwards; pointer-events:none}
+@keyframes fall{to{transform:translateY(105vh) rotate(660deg)}}
+
+/* ============ sticky mobile CTA ============ */
+.sticky-cta{display:none; position:fixed; left:0; right:0; bottom:0; z-index:80; padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(5,10,30,.94); backdrop-filter:blur(12px); border-top:1px solid rgba(255,255,255,.1)}
+.sticky-cta .btn{width:100%; font-size:16px; padding:14px}
+
+/* ============ ADMIN ============ */
+.admin-head{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:20px 0 4px; flex-wrap:wrap}
+.admin-head h1{font-size:23px; font-weight:800}
+.admin-head .sub{color:var(--muted); font-size:13px; font-family:monospace}
+.admin-actions{display:flex; gap:9px; flex-wrap:wrap}
+.btn-sm{font-size:12.5px; padding:8px 16px; border-radius:10px}
+.btn-red{background:rgba(232,64,75,.16); color:#ffb3b9; border:1px solid rgba(232,64,75,.5)}
+.btn-blue{background:rgba(46,124,246,.16); color:var(--sky); border:1px solid rgba(46,124,246,.5)}
+.alert-strip{display:none; margin-top:12px; padding:11px 18px; border-radius:13px; font-size:13.5px; font-weight:600;
+  background:rgba(232,64,75,.14); border:1px solid rgba(232,64,75,.5); color:#ffc2c7}
+.alert-strip.show{display:block}
+.ovr{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:18px}
+.ocard{padding:16px 17px; border-radius:15px}
+.ocard .l{font-size:11.5px; color:var(--muted); letter-spacing:.3px}
+.ocard .v{font-size:23px; font-weight:800; margin-top:5px}
+.ocard .s{font-size:11.5px; color:var(--muted); margin-top:3px}
+.ocard .v.blue{color:var(--sky)} .ocard .v.gold{color:var(--gold)} .ocard .v.ok{color:var(--ok)} .ocard .v.bad{color:var(--bad)}
+.progress{height:9px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; margin-top:8px}
+.progress i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--blue2),var(--gold)); transition:width .5s}
+.kpi-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px}
+.kpi{padding:15px 18px; border-radius:14px; display:flex; align-items:center; gap:14px}
+.kpi .ic{font-size:24px}
+.kpi .l{font-size:12px; color:var(--muted)}
+.kpi .v{font-size:19px; font-weight:800}
+.grid2{display:grid; grid-template-columns:1.1fr .9fr; gap:20px; align-items:start}
+.panel-t{padding:0}
+.panel-t .ph{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--panel-br); gap:10px; flex-wrap:wrap}
+.panel-t .ph h3{font-size:15.5px; font-weight:700}
+.panel-t .ph .sub{font-size:12px; color:var(--muted)}
+.searchbox{display:flex; gap:8px; flex-wrap:wrap}
+.searchbox input, .searchbox select{font-family:inherit; font-size:12.5px; color:var(--text); background:rgba(255,255,255,.06);
+  border:1px solid var(--panel-br); border-radius:9px; padding:7px 12px; outline:none; min-width:150px}
+.searchbox input::placeholder{color:#6c7ba3}
+.mini-btn{font-family:inherit; font-size:11.5px; cursor:pointer; border-radius:8px; padding:4px 10px; border:1px solid; background:transparent}
+.mini-btn.ap{color:var(--ok); border-color:rgba(61,220,151,.5)}
+.mini-btn.rj{color:var(--bad); border-color:rgba(255,107,122,.5)}
+.mini-btn.pd{color:var(--sky); border-color:rgba(94,162,255,.5)}
+.fraud-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.fcard{padding:16px 18px; border-radius:15px}
+.fcard h4{font-size:13px; font-weight:600; color:var(--muted); margin-bottom:10px; display:flex; justify-content:space-between}
+.fcard h4 .n{color:var(--bad); font-weight:800; font-size:15px}
+.fcard ul{list-style:none; font-size:12.5px; display:flex; flex-direction:column; gap:8px; color:#d5ddf3}
+.fcard li{display:flex; justify-content:space-between; gap:8px}
+.fcard li span:last-child{color:var(--muted)}
+.settings-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.field{display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:var(--muted)}
+.field input, .field select{font-family:inherit; font-size:13.5px; color:var(--text); background:rgba(255,255,255,.06);
+  border:1px solid var(--panel-br); border-radius:10px; padding:9px 13px; outline:none}
+.field input:focus{border-color:var(--blue)}
+.toggle-field{display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,.04);
+  border:1px solid var(--panel-br); border-radius:12px; padding:11px 15px; font-size:13px; color:#d5ddf3; cursor:pointer}
+.reports{display:flex; flex-wrap:wrap; gap:10px}
+.toast{position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px); z-index:130; opacity:0;
+  background:#12224e; border:1px solid rgba(94,162,255,.5); color:#e6efff; font-size:13.5px; padding:12px 22px; border-radius:12px;
+  box-shadow:0 14px 40px rgba(0,0,0,.5); transition:.25s; pointer-events:none}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+footer.site{margin:46px 0 30px; color:#5f6d95; font-size:12px; line-height:1.9; text-align:center}
+
+/* ============ responsive ============ */
+@media(max-width:1020px){
+  .ovr{grid-template-columns:repeat(3,1fr)}
+  .fraud-grid,.settings-grid,.kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr; padding-top:12px}
+  .mascot-box{order:-1} .mascot svg{width:170px; height:auto}
+  .sign{top:-44px; right:-14px; font-size:12px}
+  .reveal-grid{grid-template-columns:1fr}
+  .wallet-cards{grid-template-columns:repeat(2,1fr)}
+  .rules{grid-template-columns:1fr}
+  .ovr{grid-template-columns:repeat(2,1fr)}
+  .fraud-grid,.settings-grid,.kpi-strip{grid-template-columns:1fr}
+  .grand{flex-direction:column; text-align:center} .grand .pill{margin-left:0}
+  .sticky-cta{display:block}
+  body.admin-on .sticky-cta{display:none}
+  main{padding-bottom:90px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= PROTOTYPE BAR ================= -->
+<div class="proto">
+  <span class="tag">PROTOTYPE</span>
+  <span>ANC New Job Lucky Reward</span>
+  <span class="route" id="routeLbl">/portal/new-job-reward</span>
+  <span class="grow"></span>
+  <button class="pbtn active" id="btnUser" onclick="switchView('user')">👤 หน้าพนักงาน</button>
+  <button class="pbtn" id="btnAdmin" onclick="switchView('admin')">🛠️ หน้าแอดมิน</button>
+  <button class="pbtn" onclick="document.getElementById('statePanel').classList.toggle('show')">⚙️ สถานะเดโม่</button>
+</div>
+
+<div class="state-panel" id="statePanel">
+  <h4>PROTOTYPE STATE SWITCHER</h4>
+  <label>โหมดคะแนนสะสม (งบเงินสดหมด–ภายใน)<input type="checkbox" id="swBonus" onchange="setBonusMode(this.checked)"><span class="sw"></span></label>
+  <label>รางวัลใหญ่ 1,000฿ ออกแล้ว<input type="checkbox" id="swGrand" onchange="setGrand(this.checked)"><span class="sw"></span></label>
+  <label>Empty states (ผู้ใช้ใหม่)<input type="checkbox" id="swEmpty" onchange="setEmpty(this.checked)"><span class="sw"></span></label>
+  <div class="row-btns">
+    <button class="pbtn" onclick="setTokens(3)">สิทธิ์ = 3</button>
+    <button class="pbtn" onclick="setTokens(0)">สิทธิ์ = 0</button>
+  </div>
+</div>
+
+<!-- ================= USER VIEW ================= -->
+<main class="wrap" id="userView">
+  <header class="site">
+    <div class="logo"><div class="mark">A</div>ANC Portal <small>| New Job Lucky Reward</small></div>
+    <div class="userchip"><div class="av">ส</div>คุณสมชาย ใจดี · ทีม Alpha</div>
+  </header>
+
+  <!-- 1. HERO -->
+  <section class="hero">
+    <div>
+      <div class="campaign-pill"><span class="dot"></span>แคมเปญพิเศษ · New Job Boost!</div>
+      <h1>แจ้งงานใหม่วันนี้<br>ลุ้นรับสูงสุด <span class="hl">1,000 บาท</span></h1>
+      <p class="sub">ทุกงานใหม่ที่ผ่านเงื่อนไข รับสิทธิ์ลุ้นรางวัลหรือคะแนนสะสมทันที</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="toast('เปิดฟอร์มแจ้งงานใหม่ (เดโม่)')">แจ้งงานใหม่เลย</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('rules').scrollIntoView()">ดูกติกา</button>
+      </div>
+      <p class="tiny">ยิ่งแจ้งงานใหม่ที่มี<b>คุณภาพ</b> ยิ่งมีสิทธิ์สะสมรางวัลและคะแนนพิเศษ</p>
+    </div>
+    <div class="mascot-box">
+      <div class="glow"></div>
+      <div class="mascot">
+        <div class="sign" id="skySign">แจ้งงานใหม่ ลุ้นรับรางวัล</div>
+        <svg width="245" height="278" viewBox="0 0 240 275" fill="none">
+          <defs>
+            <linearGradient id="furG" x1="60" y1="40" x2="180" y2="160"><stop stop-color="#3E7BF0"/><stop offset="1" stop-color="#1E45AE"/></linearGradient>
+            <linearGradient id="flameG" x1="120" y1="0" x2="120" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#7FC0FF"/><stop offset=".45" stop-color="#3E86FF"/><stop offset="1" stop-color="#16368F"/></linearGradient>
+            <linearGradient id="hoodieG" x1="80" y1="148" x2="165" y2="220"><stop stop-color="#27528F"/><stop offset="1" stop-color="#132A52"/></linearGradient>
+            <linearGradient id="shieldG" x1="0" y1="-26" x2="0" y2="28"><stop stop-color="#5EA2FF"/><stop offset="1" stop-color="#1D5FD6"/></linearGradient>
+            <filter id="glowB" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#2E7CF6" flood-opacity=".5"/></filter>
+          </defs>
+          <ellipse cx="120" cy="260" rx="66" ry="11" fill="rgba(0,0,0,.38)"/>
+          <g filter="url(#glowB)">
+            <!-- tail -->
+            <path d="M162 212 C 200 224 216 202 202 188 C 192 178 180 188 190 196" stroke="#2E7CF6" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <!-- legs + sneakers -->
+            <rect x="94" y="200" width="23" height="42" rx="11.5" fill="#16294F"/>
+            <rect x="123" y="200" width="23" height="42" rx="11.5" fill="#16294F"/>
+            <ellipse cx="102" cy="247" rx="21" ry="10.5" fill="#0E1E3C"/>
+            <ellipse cx="138" cy="247" rx="21" ry="10.5" fill="#0E1E3C"/>
+            <path d="M88 246 Q102 240 116 246" stroke="#DDE7F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M124 246 Q138 240 152 246" stroke="#DDE7F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- arms -->
+            <path d="M90 162 C 68 158 50 148 42 132" stroke="#1F3E75" stroke-width="15" stroke-linecap="round" fill="none"/>
+            <path d="M150 164 C 170 167 181 174 186 181" stroke="#1F3E75" stroke-width="15" stroke-linecap="round" fill="none"/>
+            <!-- thumbs-up hand -->
+            <circle cx="38" cy="126" r="12" fill="#FFDCB8"/>
+            <rect x="31" y="100" width="11.5" height="23" rx="5.7" fill="#FFDCB8" transform="rotate(-14 37 111)"/>
+            <!-- body hoodie -->
+            <rect x="78" y="146" width="84" height="70" rx="30" fill="url(#hoodieG)"/>
+            <path d="M100 152 Q120 164 140 152" stroke="#3E68C9" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="120" y1="160" x2="120" y2="212" stroke="#5EA2FF" stroke-width="2" stroke-dasharray="3 3" opacity=".7"/>
+            <rect x="106" y="170" width="28" height="19" rx="4" fill="#2E7CF6" stroke="#9CC4FF" stroke-width="1.2"/>
+            <text x="120" y="183" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="800" font-family="Prompt" letter-spacing=".5">ANC</text>
+            <!-- shield hand -->
+            <circle cx="188" cy="183" r="10" fill="#FFDCB8"/>
+            <g transform="translate(196,182) rotate(6)">
+              <path d="M0,-27 C 11,-21 19,-19 24,-19 C 24,3 14,20 0,28 C -14,20 -24,3 -24,-19 C -19,-19 -11,-21 0,-27 Z" fill="url(#shieldG)" stroke="#E3ECF9" stroke-width="3.5"/>
+              <path d="M-10,-2 L-3,7 L12,-11" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </g>
+            <!-- head -->
+            <circle cx="56" cy="93" r="21" fill="url(#furG)"/><circle cx="56" cy="93" r="11" fill="#FFD9B8"/>
+            <circle cx="184" cy="93" r="21" fill="url(#furG)"/><circle cx="184" cy="93" r="11" fill="#FFD9B8"/>
+            <circle cx="120" cy="98" r="56" fill="url(#furG)"/>
+            <path d="M84 58 C 82 38 92 34 98 12 C 102 24 106 22 110 30 C 112 18 116 12 119 0 C 122 14 126 18 128 30 C 132 22 136 24 140 8 C 146 28 154 36 154 58 C 136 46 102 46 84 58 Z" fill="url(#flameG)"/>
+            <path d="M104 52 C 104 42 110 38 113 28 C 116 38 120 40 121 32 C 125 40 128 44 128 52 C 120 47 112 47 104 52 Z" fill="#BFE0FF" opacity=".55"/>
+            <ellipse cx="120" cy="94" rx="40" ry="29" fill="#FFE7CB"/>
+            <ellipse cx="120" cy="120" rx="33" ry="23" fill="#FFE7CB"/>
+            <path d="M95 81 Q102 76 109 80" stroke="#14306B" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <path d="M131 80 Q138 76 145 81" stroke="#14306B" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <ellipse cx="102" cy="97" rx="9.5" ry="11.5" fill="#0B1B3E"/>
+            <circle cx="104" cy="95" r="4.2" fill="#2E7CF6"/><circle cx="99" cy="92" r="3" fill="#fff"/><circle cx="106" cy="102" r="1.4" fill="#fff"/>
+            <ellipse cx="138" cy="97" rx="9.5" ry="11.5" fill="#0B1B3E"/>
+            <circle cx="140" cy="95" r="4.2" fill="#2E7CF6"/><circle cx="135" cy="92" r="3" fill="#fff"/><circle cx="142" cy="102" r="1.4" fill="#fff"/>
+            <ellipse cx="120" cy="111" rx="5" ry="3.6" fill="#4A2E17"/>
+            <path d="M103 117 Q120 138 137 117 Q120 149 103 117 Z" fill="#6B2424"/>
+            <ellipse cx="120" cy="130" rx="8" ry="4.5" fill="#EF7B7B"/>
+            <circle cx="86" cy="113" r="6" fill="#FF9BA8" opacity=".45"/>
+            <circle cx="154" cy="113" r="6" fill="#FF9BA8" opacity=".45"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. GRAND PRIZE HIGHLIGHT -->
+  <section class="card grand">
+    <div class="medal">🏆</div>
+    <div>
+      <h3>รางวัลใหญ่สูงสุด <b>1,000 บาท</b></h3>
+      <p id="grandDesc">ทุกสิทธิ์มีโอกาสถึงรางวัลใหญ่ อย่าลืมใช้สิทธิ์ของคุณวันนี้</p>
+    </div>
+    <span class="pill avail" id="grandPill">✨ รางวัลใหญ่ 1,000 บาท วันนี้ยังรออยู่</span>
+  </section>
+
+  <!-- 3. REWARD REVEAL -->
+  <section class="reveal-grid">
+    <div class="card reveal-card">
+      <h2>🎡 ANC Lucky Reward Wheel</h2>
+      <p class="desc" id="revealDesc">คุณได้รับสิทธิ์ลุ้นรางวัลจากงานใหม่ที่ผ่านเงื่อนไขแล้ว</p>
+      <div class="token-chip" id="tokenChip">สิทธิ์เปิดรางวัลของฉัน: <b id="tokenCount">3</b> สิทธิ์</div>
+      <div class="wheel-wrap" id="wheelWrap">
+        <div class="wheel-glow"></div>
+        <div class="wheel-ring"></div>
+        <div class="wheel-pointer"></div>
+        <svg id="wheelSvg" viewBox="0 0 200 200"></svg>
+        <div class="wheel-hub" id="wheelHub">ANC<small>Lucky Reward</small></div>
+      </div>
+      <div class="bonus-note" id="bonusNote">💙 <span>วันนี้คุณยังสะสมคะแนนจากงานใหม่ได้ต่อ พร้อมรับสิทธิ์ลุ้นรางวัลรอบพิเศษ</span></div>
+      <button class="btn btn-gold" id="revealBtn" onclick="reveal()">เปิดรางวัลของฉัน</button>
+    </div>
+
+    <div class="card howto">
+      <h3>รับสิทธิ์ง่าย ๆ ใน 4 ขั้นตอน</h3>
+      <ol class="steps">
+        <li>แจ้งงานใหม่ผ่าน ANC Portal พร้อมข้อมูลลูกค้าและรถให้ครบถ้วน</li>
+        <li>ระบบและทีมงานตรวจสอบว่าเป็นงานใหม่ที่ผ่านเงื่อนไข</li>
+        <li>รับสิทธิ์เปิดรางวัลหรือคะแนนสะสมทันทีที่งานผ่านการตรวจ</li>
+        <li>รางวัลถูกบันทึกใน Reward Wallet และจ่ายตามรอบที่บริษัทกำหนด</li>
+      </ol>
+      <div class="moti">
+        <span>ทุกงานใหม่ มีโอกาสสร้างรางวัล</span>
+        <span>แจ้งงานใหม่ให้ไว ลุ้นรางวัลให้ปัง</span>
+        <span>งานใหม่คุณภาพ ยิ่งแจ้ง ยิ่งมีสิทธิ์</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. LEADERBOARD -->
+  <section class="section">
+    <h2>🏅 Leaderboard นักล่างานใหม่</h2>
+    <p class="sub">ช่วยดันยอดงานใหม่ พร้อมลุ้นรับรางวัลพิเศษ — อันดับอัปเดตอัตโนมัติ</p>
+    <div class="tabs">
+      <button class="tab active" onclick="lbTab(this,'today')">วันนี้</button>
+      <button class="tab" onclick="lbTab(this,'week')">สัปดาห์นี้</button>
+      <button class="tab" onclick="lbTab(this,'month')">เดือนนี้</button>
+    </div>
+    <div class="card tbl hide-when-empty">
+      <table>
+        <thead><tr><th>อันดับ</th><th>ชื่อ</th><th>ทีม</th><th>งานใหม่ที่ผ่านเงื่อนไข</th><th>คะแนนสะสม</th><th>Badge</th></tr></thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+    <div class="card empty"><div class="big">🏁</div>ยังไม่มีอันดับวันนี้ มาเริ่มสร้างผลงานแรกกันเลย</div>
+  </section>
+
+  <!-- 8. REWARD WALLET -->
+  <section class="section">
+    <h2>👛 Reward Wallet ของฉัน</h2>
+    <p class="sub">รางวัลทั้งหมดถูกบันทึกและตรวจสอบตามเงื่อนไขบริษัท จ่ายตามรอบที่กำหนด</p>
+    <div class="wallet-cards hide-when-empty">
+      <div class="card wcard points"><div class="l">คะแนนสะสมของฉัน</div><div class="v" id="wPoints">180 <small>คะแนน</small></div></div>
+      <div class="card wcard pending"><div class="l">รางวัลรอตรวจสอบ</div><div class="v" id="wPending">350 <small>บาท</small></div></div>
+      <div class="card wcard approved"><div class="l">รางวัลที่อนุมัติแล้ว</div><div class="v" id="wApproved">520 <small>บาท</small></div></div>
+      <div class="card wcard paid"><div class="l">รางวัลที่จ่ายแล้ว</div><div class="v" id="wPaid">1,240 <small>บาท</small></div></div>
+    </div>
+    <div class="card tbl hide-when-empty" style="margin-top:14px">
+      <table>
+        <thead><tr><th>วันที่</th><th>เลขอ้างอิงงาน</th><th>ประเภทสิทธิ์</th><th>รางวัล/คะแนน</th><th>สถานะ</th></tr></thead>
+        <tbody id="walletBody">
+          <tr><td>01 ก.ค. 2569</td><td>JOB-260701-0142</td><td>Lucky Reward</td><td class="amt-gold">200 บาท</td><td><span class="chip pending">รอตรวจสอบ</span></td></tr>
+          <tr><td>30 มิ.ย. 2569</td><td>JOB-260630-0098</td><td>Lucky Reward</td><td class="amt-gold">150 บาท</td><td><span class="chip pending">รอตรวจสอบ</span></td></tr>
+          <tr><td>29 มิ.ย. 2569</td><td>JOB-260629-0211</td><td>Bonus Point</td><td class="amt-pt">50 คะแนน</td><td><span class="chip approved">อนุมัติแล้ว</span></td></tr>
+          <tr><td>27 มิ.ย. 2569</td><td>JOB-260627-0065</td><td>Lucky Reward</td><td class="amt-gold">520 บาท</td><td><span class="chip approved">อนุมัติแล้ว</span></td></tr>
+          <tr><td>24 มิ.ย. 2569</td><td>JOB-260624-0187</td><td>Lucky Reward</td><td class="amt-gold">700 บาท</td><td><span class="chip paid">จ่ายแล้ว</span></td></tr>
+          <tr><td>21 มิ.ย. 2569</td><td>JOB-260621-0034</td><td>Lucky Reward</td><td class="amt-gold">20 บาท</td><td><span class="chip rejected">ไม่ผ่านเงื่อนไข</span></td></tr>
+          <tr><td>19 มิ.ย. 2569</td><td>JOB-260619-0120</td><td>Lucky Reward</td><td class="amt-gold">540 บาท</td><td><span class="chip paid">จ่ายแล้ว</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card empty"><div class="big">🎫</div>ยังไม่มีประวัติรางวัล เริ่มแจ้งงานใหม่เพื่อรับสิทธิ์แรกของคุณ</div>
+  </section>
+
+  <!-- 6. RULES -->
+  <section class="section" id="rules">
+    <h2>📋 กติกาการรับสิทธิ์</h2>
+    <p class="sub">สั้น ชัดเจน ตรวจสอบได้</p>
+    <div class="rules">
+      <div class="card rule"><div class="ic">✓</div>1 งานใหม่ที่ผ่านเงื่อนไข = 1 สิทธิ์ลุ้นรางวัลหรือคะแนนสะสม</div>
+      <div class="card rule"><div class="ic">✓</div>ต้องเป็นงานใหม่จริง ไม่ใช่งานต่ออายุ</div>
+      <div class="card rule"><div class="ic">✓</div>ข้อมูลต้องครบถ้วนและสามารถตรวจสอบได้</div>
+      <div class="card rule"><div class="ic">✓</div>งานซ้ำ งานทดสอบ หรือข้อมูลไม่ถูกต้อง จะไม่ได้รับสิทธิ์</div>
+      <div class="card rule"><div class="ic">✓</div>บริษัทขอสงวนสิทธิ์ตรวจสอบและยกเลิกรางวัล หากพบข้อมูลไม่ถูกต้อง</div>
+      <div class="card rule"><div class="ic">✓</div>รางวัลจะถูกบันทึกใน Reward Wallet และจ่ายตามรอบที่บริษัทกำหนด</div>
+    </div>
+    <div class="card terms">
+      <b>เงื่อนไขและข้อกำหนด:</b> บริษัทขอสงวนสิทธิ์ในการตรวจสอบข้อมูลก่อนอนุมัติรางวัล หากพบว่างานที่แจ้งเข้ามาเป็นงานซ้ำ งานต่ออายุ ข้อมูลไม่ครบถ้วน ข้อมูลไม่ถูกต้อง หรือมีพฤติกรรมที่ไม่เป็นไปตามเงื่อนไข บริษัทสามารถยกเลิกสิทธิ์รางวัลได้โดยไม่ต้องแจ้งให้ทราบล่วงหน้า ทั้งนี้บริษัทขอสงวนสิทธิ์ในการปรับเปลี่ยนกติกา มูลค่ารางวัล และเกณฑ์ผู้มีสิทธิ์เข้าร่วมได้ตามความเหมาะสม รางวัลจะจ่ายตามรอบการจ่ายของบริษัท
+      <br><br>
+      <b>การคุ้มครองข้อมูลส่วนบุคคล (PDPA):</b> ผู้แจ้งงานยืนยันว่าได้รับอนุญาตหรือมีสิทธิ์โดยชอบในการนำส่งข้อมูลลูกค้าเข้าสู่ระบบ ANC Portal เพื่อให้บริษัทใช้ในการติดต่อ นำเสนอผลิตภัณฑ์ประกันภัย และดำเนินการตามขั้นตอนที่เกี่ยวข้อง
+    </div>
+  </section>
+
+  <footer class="site">ANC New Job Lucky Reward · Prototype for internal review · ข้อมูลทั้งหมดเป็นข้อมูลจำลอง</footer>
+</main>
+
+<!-- ================= ADMIN VIEW ================= -->
+<main class="wrap" id="adminView" style="display:none">
+  <div class="admin-head">
+    <div>
+      <h1>🛠️ New Job Lucky Reward — Admin</h1>
+      <div class="sub">/admin/new-job-reward · Campaign: 01–31 ก.ค. 2569</div>
+    </div>
+    <div class="admin-actions">
+      <button class="btn btn-sm btn-blue" onclick="toast('Export CSV เรียบร้อย (เดโม่)')">⬇ Export CSV</button>
+      <button class="btn btn-sm btn-blue" onclick="toast('เปิด Audit Log (เดโม่)')">📜 Audit Log</button>
+      <button class="btn btn-sm btn-red" id="pauseBtn" onclick="togglePause()">⏸ Pause Campaign</button>
+      <button class="btn btn-sm btn-red" onclick="emergencyStop()">🛑 Emergency Stop</button>
+    </div>
+  </div>
+  <div class="alert-strip" id="adminAlert"></div>
+
+  <!-- 1. overview cards -->
+  <div class="ovr">
+    <div class="card ocard"><div class="l">งานทั้งหมดวันนี้</div><div class="v">178</div><div class="s">อัปเดตล่าสุด 14:32</div></div>
+    <div class="card ocard"><div class="l">งานใหม่ที่ผ่านเงื่อนไข</div><div class="v blue" id="aQualified">47</div><div class="s">เป้าหมายวันนี้ 60 งาน</div></div>
+    <div class="card ocard"><div class="l">สัดส่วนงานใหม่</div><div class="v ok">26.4%</div><div class="s">เป้าหมาย ≥ 30% <div class="progress"><i style="width:88%"></i></div></div></div>
+    <div class="card ocard"><div class="l">งบรางวัลวันนี้</div><div class="v">5,000฿</div><div class="s">Default budget</div></div>
+    <div class="card ocard"><div class="l">ใช้งบไปแล้ว</div><div class="v gold" id="aUsed">2,360฿</div><div class="s">งบคงเหลือ <b id="aRemain">2,640฿</b><div class="progress"><i id="aBudgetBar" style="width:47%"></i></div></div></div>
+    <div class="card ocard"><div class="l">รางวัลใหญ่ 1,000฿</div><div class="v ok" id="aGrand">ยังไม่ออก</div><div class="s">จำกัด 1 รางวัล/วัน</div></div>
+    <div class="card ocard"><div class="l">รอตรวจสอบ</div><div class="v gold">6</div><div class="s">รายการรออนุมัติ</div></div>
+    <div class="card ocard"><div class="l">Dynamic Reward Mode</div><div class="v blue">เปิดใช้งาน</div><div class="s">ปรับน้ำหนักตามงบ/เวลา/ปริมาณงาน</div></div>
+    <div class="card ocard"><div class="l">Fraud Flags วันนี้</div><div class="v bad">5</div><div class="s">2 รายการต้องรีวิว</div></div>
+    <div class="card ocard"><div class="l">โหมดปัจจุบัน</div><div class="v" id="aMode">Cash Reward</div><div class="s" id="aModeS">สลับเป็น Bonus Point อัตโนมัติเมื่องบหมด</div></div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="card kpi"><div class="ic">🎯</div><div><div class="l">ต้นทุนรางวัลเฉลี่ยต่องานใหม่เป้าหมาย (5,000 ÷ 60)</div><div class="v">83.33 บาท/งาน</div></div></div>
+    <div class="card kpi"><div class="ic">📈</div><div><div class="l">ต้นทุนต่องานใหม่ส่วนเพิ่ม (5,000 ÷ 20)</div><div class="v">250 บาท/งาน</div></div></div>
+    <div class="card kpi"><div class="ic">💰</div><div><div class="l">ต้นทุนจริงวันนี้ต่องานที่ผ่านเงื่อนไข</div><div class="v" id="kpiActual">50.2 บาท/งาน</div></div></div>
+  </div>
+
+  <!-- 2. reward pool + fraud summary -->
+  <section class="section grid2">
+    <div class="card panel-t">
+      <div class="ph"><h3>🎁 Reward Pool Management</h3><span class="sub">Prize bag ตั้งต้นสำหรับเป้า 60 งาน = 5,000฿ · Dynamic Mode: <b style="color:var(--ok)">ON</b></span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>มูลค่ารางวัล</th><th>จำนวนตั้งต้น</th><th>จ่ายไปแล้ว</th><th>คงเหลือ</th><th>สถานะ</th></tr></thead>
+        <tbody id="poolBody"></tbody>
+      </table></div>
+    </div>
+    <div class="card panel-t">
+      <div class="ph"><h3>🚨 Fraud Monitoring สรุปวันนี้</h3><span class="sub">อัปเดตเรียลไทม์</span></div>
+      <div style="padding:16px 18px" class="fraud-grid" id="fraudGridWrap">
+        <div class="fcard" style="grid-column:1/-1; padding:0; background:none; border:none">
+          <ul>
+            <li><span>📱 เบอร์โทรซ้ำ (08x-xxx-1234 พบ 4 ครั้ง)</span><span class="chip suspicious">suspicious</span></li>
+            <li><span>🚗 ทะเบียนรถซ้ำ (กข 1234 กทม. พบ 3 ครั้ง)</span><span class="chip warning">warning</span></li>
+            <li><span>🔢 เลขตัวถังซ้ำ 1 กรณี (2 ผู้แจ้ง)</span><span class="chip review">admin_review_required</span></li>
+            <li><span>⚡ คุณกอล์ฟ แจ้ง 9 งานใน 30 นาที</span><span class="chip warning">warning</span></li>
+            <li><span>🧪 ข้อมูลลักษณะ test data (ชื่อ "ทดสอบ ระบบ")</span><span class="chip blocked">blocked</span></li>
+            <li><span>🔁 งานเดียวกันถูกแจ้งเป็นทั้งงานใหม่และต่ออายุ</span><span class="chip review">admin_review_required</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. submission review -->
+  <section class="section">
+    <div class="card panel-t">
+      <div class="ph">
+        <h3>🔎 Submission Review — งานรอตรวจสอบ</h3>
+        <div class="searchbox">
+          <input placeholder="ค้นหา: ผู้แจ้ง / เลขงาน / เบอร์ / ทะเบียนรถ">
+          <select><option>ทุกสถานะ</option><option>รอตรวจสอบ</option><option>ผ่านเงื่อนไข</option><option>ไม่ผ่าน</option></select>
+        </div>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>เลขงาน</th><th>ผู้แจ้ง</th><th>ทีม</th><th>ลูกค้า</th><th>เบอร์โทร</th><th>ทะเบียนรถ</th><th>ประเภท</th><th>ซ้ำ?</th><th>Fraud</th><th>สถานะรางวัล</th><th>จัดการ</th></tr></thead>
+        <tbody id="subBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 4. transaction log -->
+  <section class="section">
+    <div class="card panel-t">
+      <div class="ph"><h3>💳 Reward Transaction Log</h3><span class="sub">ทุกการเปิดรางวัลถูกบันทึกใน audit log ฝั่งเซิร์ฟเวอร์</span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Transaction</th><th>วัน/เวลา</th><th>ผู้ใช้</th><th>เลขงาน</th><th>รางวัล/คะแนน</th><th>สถานะ</th><th>อนุมัติโดย</th><th>การจ่าย</th></tr></thead>
+        <tbody id="txBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 5. settings -->
+  <section class="section">
+    <div class="card panel-t">
+      <div class="ph"><h3>⚙️ Admin Settings</h3><span class="sub">การแก้ไขทุกครั้งถูกบันทึกใน audit log</span></div>
+      <div style="padding:18px">
+        <div class="settings-grid">
+          <div class="field">งบรางวัลเงินสด/วัน (บาท)<input type="number" value="5000"></div>
+          <div class="field">เป้างานใหม่ที่ผ่านเงื่อนไข/วัน<input type="number" value="60"></div>
+          <div class="field">รางวัลต่ำสุด (บาท)<input type="number" value="20"></div>
+          <div class="field">รางวัลสูงสุด (บาท)<input type="number" value="1000"></div>
+          <div class="field">รายการมูลค่ารางวัล<input value="20, 50, 100, 200, 300, 500, 700, 1000"></div>
+          <div class="field">รางวัลใหญ่ (Grand Prize)<input type="number" value="1000"></div>
+          <div class="field">จำกัดรางวัลใหญ่/วัน<input type="number" value="1"></div>
+          <div class="field">คะแนนสะสม/งานที่ผ่านเงื่อนไข (Bonus Point Mode)<input type="number" value="50"></div>
+          <div class="field">วันเริ่มแคมเปญ<input type="date" value="2026-07-01"></div>
+          <div class="field">วันสิ้นสุดแคมเปญ<input type="date" value="2026-07-31"></div>
+          <div class="field">สิทธิ์ผู้เข้าร่วม<select><option>พนักงาน + ตัวแทน + ผู้ใช้ที่อนุมัติแล้ว</option><option>เฉพาะพนักงาน</option><option>เฉพาะตัวแทน</option></select></div>
+          <div class="field">รอบการจ่ายรางวัล<select><option>รายสัปดาห์ (ทุกวันศุกร์)</option><option>รายเดือน</option><option>ทันทีหลังอนุมัติ</option></select></div>
+          <div class="field">ขั้นตอนอนุมัติรางวัล<select><option>ตรวจอัตโนมัติ + แอดมินอนุมัติ</option><option>แอดมินอนุมัติทุกรายการ</option><option>อัตโนมัติทั้งหมด</option></select></div>
+          <label class="toggle-field">Dynamic Reward Mode<input type="checkbox" checked><span class="sw"></span></label>
+          <label class="toggle-field">Bonus Point Mode (เมื่องบหมด)<input type="checkbox" checked><span class="sw"></span></label>
+          <label class="toggle-field">Weekly Bonus รอบพิเศษ<input type="checkbox" checked><span class="sw"></span></label>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:10px">
+          <button class="btn btn-primary btn-sm" onclick="toast('บันทึกการตั้งค่าแล้ว · เขียน audit log (เดโม่)')">บันทึกการตั้งค่า</button>
+          <button class="btn btn-ghost btn-sm" onclick="toast('คืนค่าเริ่มต้นแล้ว (เดโม่)')">คืนค่าเริ่มต้น</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. reports -->
+  <section class="section" style="margin-bottom:10px">
+    <div class="card panel-t">
+      <div class="ph"><h3>📊 Reports</h3><span class="sub">Export สำหรับบัญชี/ภาษี และทีมบริหาร</span></div>
+      <div style="padding:18px" class="reports">
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด Daily Reward Report (เดโม่)')">⬇ Daily Reward Report</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด Monthly Reward Report (เดโม่)')">⬇ Monthly Reward Report</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด User Performance (เดโม่)')">⬇ User Performance</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด Team Performance (เดโม่)')">⬇ Team Performance</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด Payout Report (เดโม่)')">⬇ Payout Report</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('ดาวน์โหลด Fraud Flag Report (เดโม่)')">⬇ Fraud Flag Report</button>
+      </div>
+    </div>
+  </section>
+  <footer class="site">Admin console · ข้อมูลจำลองเพื่อการรีวิว prototype เท่านั้น</footer>
+</main>
+
+<!-- sticky mobile CTA -->
+<div class="sticky-cta" id="stickyCta"><button class="btn btn-gold" id="stickyBtn" onclick="stickyAction()">เปิดรางวัลของฉัน</button></div>
+
+<!-- result modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="em" id="mEm">🎉</div>
+    <h3 id="mTitle">ยินดีด้วย! คุณได้รับรางวัล</h3>
+    <div class="big-amt" id="mAmt">100 บาท</div>
+    <p id="mDesc">รางวัลจะถูกบันทึกใน Reward Wallet และตรวจสอบตามเงื่อนไขบริษัท</p>
+    <div class="mrow" id="mBtns"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== PROTOTYPE STATE ==================
+   หมายเหตุ: ในระบบจริง ตรรกะรางวัล/งบทั้งหมดอยู่ฝั่ง backend เท่านั้น
+   หน้า user จะไม่ได้รับข้อมูลงบคงเหลือใด ๆ — โค้ดนี้จำลองเพื่อเดโม่ */
+const S = {
+  tokens: 3,
+  bonusMode: false,
+  grandClaimed: false,
+  paused: false,
+  budgetCap: 5000,
+  used: 2360,
+  points: 180, pending: 350, approved: 520, paid: 1240,
+  bag: [
+    {v:20, total:35, given:28}, {v:50, total:12, given:10}, {v:100, total:8, given:6},
+    {v:200, total:2, given:2}, {v:300, total:1, given:1}, {v:500, total:1, given:0},
+    {v:700, total:1, given:0}, {v:1000, total:1, given:0}
+  ],
+  busy:false
+};
+
+/* ---------- view switching ---------- */
+function switchView(v){
+  document.getElementById('userView').style.display = v==='user' ? '' : 'none';
+  document.getElementById('adminView').style.display = v==='admin' ? '' : 'none';
+  document.getElementById('btnUser').classList.toggle('active', v==='user');
+  document.getElementById('btnAdmin').classList.toggle('active', v==='admin');
+  document.getElementById('routeLbl').textContent = v==='user' ? '/portal/new-job-reward' : '/admin/new-job-reward';
+  document.body.classList.toggle('admin-on', v==='admin');
+  window.scrollTo({top:0});
+}
+
+/* ---------- demo state switches ---------- */
+function setTokens(n){ S.tokens=n; renderUser(); }
+function setBonusMode(on){
+  S.bonusMode = on;
+  if(on){ S.used = S.budgetCap; } else { S.used = Math.min(S.used, 2360); }
+  renderUser(); renderAdmin();
+}
+function setGrand(on){ S.grandClaimed = on; renderUser(); renderAdmin(); }
+function setEmpty(on){ document.getElementById('userView').classList.toggle('empty-mode', on); if(on) setTokens(0); }
+
+/* ---------- user render ---------- */
+function renderUser(){
+  const has = S.tokens > 0;
+  document.getElementById('tokenCount').textContent = S.tokens;
+  document.getElementById('tokenChip').style.display = has ? '' : 'none';
+  const btn = document.getElementById('revealBtn');
+  const desc = document.getElementById('revealDesc');
+  if(has){
+    btn.textContent = 'เปิดรางวัลของฉัน';
+    btn.onclick = reveal;
+    desc.textContent = S.bonusMode
+      ? 'งานใหม่ของคุณยังมีค่า! รับคะแนนสะสมและลุ้นรางวัลรอบพิเศษต่อได้เลย'
+      : 'คุณได้รับสิทธิ์ลุ้นรางวัลจากงานใหม่ที่ผ่านเงื่อนไขแล้ว';
+  }else{
+    btn.textContent = 'แจ้งงานใหม่';
+    btn.onclick = ()=>toast('เปิดฟอร์มแจ้งงานใหม่ (เดโม่)');
+    desc.textContent = 'คุณยังไม่มีสิทธิ์เปิดรางวัล แจ้งงานใหม่ที่ผ่านเงื่อนไขเพื่อรับสิทธิ์';
+  }
+  document.getElementById('bonusNote').classList.toggle('show', S.bonusMode);
+  drawWheel(S.bonusMode ? 'points' : 'cash');
+  /* grand prize highlight — แสดงเฉพาะสถานะ ไม่แสดงงบ/จำนวนคงเหลือ */
+  const pill = document.getElementById('grandPill');
+  if(S.grandClaimed){
+    pill.className = 'pill claimed';
+    pill.textContent = 'รางวัลใหญ่วันนี้มีผู้ได้รับแล้ว แต่รางวัลอื่น ๆ ยังมีให้ลุ้นต่อ';
+    document.getElementById('grandDesc').textContent = 'พรุ่งนี้รางวัลใหญ่กลับมาอีกครั้ง วันนี้ยังลุ้นรางวัลอื่นได้ต่อเนื่อง';
+    document.getElementById('skySign').textContent = 'งานใหม่วันนี้ ไปให้ถึงเป้า!';
+  }else{
+    pill.className = 'pill avail';
+    pill.textContent = '✨ รางวัลใหญ่ 1,000 บาท วันนี้ยังรออยู่';
+    document.getElementById('grandDesc').textContent = 'ทุกสิทธิ์มีโอกาสถึงรางวัลใหญ่ อย่าลืมใช้สิทธิ์ของคุณวันนี้';
+    document.getElementById('skySign').textContent = 'แจ้งงานใหม่ ลุ้นรับรางวัล';
+  }
+  /* sticky CTA */
+  document.getElementById('stickyBtn').textContent = has ? 'เปิดรางวัลของฉัน' : 'แจ้งงานใหม่';
+}
+function stickyAction(){
+  if(S.tokens>0){ document.getElementById('wheelWrap').scrollIntoView({block:'center'}); setTimeout(reveal, 350); }
+  else toast('เปิดฟอร์มแจ้งงานใหม่ (เดโม่)');
+}
+
+/* ---------- reward wheel (จำลอง server-side logic) ---------- */
+const CASH_SEGS  = [20, 50, 100, 200, 300, 500, 700, 1000];
+const POINT_SEGS = [20, 30, 40, 50, 60, 80, 100, 150];
+let wheelRot = 0, wheelMode = null;
+
+function drawWheel(mode){
+  if(wheelMode === mode) return;
+  wheelMode = mode;
+  const segs = mode === 'points' ? POINT_SEGS : CASH_SEGS;
+  const svg = document.getElementById('wheelSvg');
+  const n = segs.length, cx = 100, cy = 100, r = 98;
+  let h = `<defs>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD070"/><stop offset="1" stop-color="#F09A00"/></linearGradient>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FC3FF"/><stop offset="1" stop-color="#2E7CF6"/></linearGradient>
+  </defs>`;
+  for(let i = 0; i < n; i++){
+    const a0 = (i/n)*2*Math.PI - Math.PI/2 - Math.PI/n;
+    const a1 = ((i+1)/n)*2*Math.PI - Math.PI/2 - Math.PI/n;
+    const x0 = cx + r*Math.cos(a0), y0 = cy + r*Math.sin(a0);
+    const x1 = cx + r*Math.cos(a1), y1 = cy + r*Math.sin(a1);
+    let fill, txt = '#E8F0FF';
+    if(mode === 'points'){
+      fill = segs[i] === 150 ? 'url(#skyGrad)' : (i % 2 ? '#0E2050' : '#123468');
+      if(segs[i] === 150) txt = '#0A2450';
+    }else{
+      fill = segs[i] === 1000 ? 'url(#goldGrad)' : (i % 2 ? '#0F1E4B' : '#17306B');
+      if(segs[i] === 1000) txt = '#3d2a00';
+      else if(segs[i] >= 500) txt = '#FFD070';
+    }
+    h += `<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${fill}" stroke="#0C1A42" stroke-width="2"/>`;
+    const mid = (a0+a1)/2, tx = cx + r*0.68*Math.cos(mid), ty = cy + r*0.68*Math.sin(mid);
+    const label = segs[i].toLocaleString();
+    const unit = mode === 'points' ? 'P' : '฿';
+    h += `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" fill="${txt}" font-size="${segs[i]>=1000?10.5:12}" font-weight="700" text-anchor="middle" dominant-baseline="middle" font-family="Prompt,sans-serif" transform="rotate(${(mid*180/Math.PI+90).toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)})">${label}${unit}</text>`;
+  }
+  svg.innerHTML = h;
+  document.getElementById('wheelHub').innerHTML = mode === 'points' ? 'ANC<small>Bonus Point</small>' : 'ANC<small>Lucky Reward</small>';
+}
+
+function pickPoints(){
+  const w = [30, 20, 15, 12, 10, 7, 4, 2];
+  let r = Math.random() * w.reduce((a,b)=>a+b, 0), acc = 0;
+  for(let i = 0; i < POINT_SEGS.length; i++){ acc += w[i]; if(r <= acc) return POINT_SEGS[i]; }
+  return POINT_SEGS[0];
+}
+
+function pickPrize(){
+  const remaining = S.budgetCap - S.used;
+  if(remaining <= 0) return null;                       // → Bonus Point Mode
+  let pool = S.bag.filter(p => p.given < p.total && p.v <= remaining);
+  if(S.grandClaimed) pool = pool.filter(p => p.v !== 1000);
+  if(!pool.length) return null;
+  const weights = pool.map(p => p.total - p.given);     // dynamic weighting ตามของที่เหลือ
+  let r = Math.random() * weights.reduce((a,b)=>a+b,0), acc = 0;
+  for(let i=0;i<pool.length;i++){ acc += weights[i]; if(r <= acc) return pool[i]; }
+  return pool[0];
+}
+
+function reveal(){
+  if(S.busy || S.tokens<=0) return;
+  S.busy = true; S.tokens--;
+  const btn = document.getElementById('revealBtn'); btn.disabled = true;
+  document.getElementById('tokenCount').textContent = S.tokens;
+
+  /* จำลองผลจาก server — ของจริง frontend รับผลมาแล้วค่อยหมุนวงล้อให้ไปหยุดตรงผลนั้น */
+  const prize = S.bonusMode ? null : pickPrize();
+  let idx, ptVal = 0;
+  if(prize){
+    drawWheel('cash');
+    idx = CASH_SEGS.indexOf(prize.v);
+  }else{
+    /* Bonus Point Mode — โทนบวกเสมอ ไม่พูดเรื่องงบหมด */
+    if(!S.bonusMode){ S.bonusMode = true; document.getElementById('swBonus').checked = true; }
+    drawWheel('points');
+    ptVal = pickPoints();
+    idx = POINT_SEGS.indexOf(ptVal);
+  }
+
+  /* คำนวณมุมให้ล้อหยุดตรงช่องผลลัพธ์เสมอ (เทียบจากมุมสะสมปัจจุบัน) */
+  const segA = 360 / 8;
+  const cur = ((wheelRot % 360) + 360) % 360;
+  const targetMod = ((360 - idx * segA) % 360 + 360) % 360;
+  const jitter = (Math.random() * 0.5 - 0.25) * segA;
+  wheelRot += 360 * 5 + ((targetMod - cur + 360) % 360) + jitter;
+  document.getElementById('wheelSvg').style.transform = `rotate(${wheelRot}deg)`;
+
+  setTimeout(()=>{
+    if(prize){
+      prize.given++; S.used += prize.v; S.pending += prize.v;
+      if(prize.v === 1000){ S.grandClaimed = true; document.getElementById('swGrand').checked = true; }
+      addWalletRow('Lucky Reward', prize.v + ' บาท', 'amt-gold', '<span class="chip pending">รอตรวจสอบ</span>');
+      addTxRow(prize.v + ' ฿');
+      showResult('cash', prize.v);
+      confetti(prize.v >= 500 ? 70 : 34, false);
+    }else{
+      S.points += ptVal;
+      addWalletRow('Bonus Point', ptVal + ' คะแนน', 'amt-pt', '<span class="chip approved">อนุมัติแล้ว</span>');
+      addTxRow(ptVal + ' pt');
+      showResult('points', ptVal);
+      confetti(34, true);
+    }
+    updateWallet(); renderAdmin();
+    btn.disabled = false; S.busy = false; renderUser();
+  }, 5100);
+}
+
+function showResult(type, val){
+  const em = document.getElementById('mEm'), t = document.getElementById('mTitle'),
+        a = document.getElementById('mAmt'), d = document.getElementById('mDesc'),
+        b = document.getElementById('mBtns');
+  if(type === 'cash'){
+    em.textContent = val >= 500 ? '🤩' : '🎉';
+    t.textContent = 'ยินดีด้วย! คุณได้รับรางวัล';
+    a.className = 'big-amt'; a.textContent = val.toLocaleString() + ' บาท';
+    d.textContent = 'รางวัลจะถูกบันทึกใน Reward Wallet และตรวจสอบตามเงื่อนไขบริษัท';
+    b.innerHTML = '<button class="btn btn-primary btn-sm" onclick="goWallet()">ดู Reward Wallet</button>'
+                + '<button class="btn btn-ghost btn-sm" onclick="closeModal();toast(\'เปิดฟอร์มแจ้งงานใหม่ (เดโม่)\')">แจ้งงานใหม่เพิ่ม</button>';
+  }else{
+    em.textContent = '💙';
+    t.textContent = 'คุณได้รับคะแนนสะสม';
+    a.className = 'big-amt pt'; a.textContent = val + ' คะแนน';
+    d.textContent = 'คะแนนนี้นับรวมใน Leaderboard และสิทธิ์ลุ้นรางวัลรอบพิเศษ';
+    b.innerHTML = '<button class="btn btn-primary btn-sm" onclick="goWallet()">ดูคะแนนของฉัน</button>'
+                + '<button class="btn btn-ghost btn-sm" onclick="closeModal();toast(\'เปิดฟอร์มแจ้งงานใหม่ (เดโม่)\')">แจ้งงานใหม่เพิ่ม</button>';
+  }
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+function goWallet(){ closeModal(); document.getElementById('wPoints').scrollIntoView({block:'center'}); }
+document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+function updateWallet(){
+  document.getElementById('wPoints').innerHTML = S.points.toLocaleString()+' <small>คะแนน</small>';
+  document.getElementById('wPending').innerHTML = S.pending.toLocaleString()+' <small>บาท</small>';
+  document.getElementById('wApproved').innerHTML = S.approved.toLocaleString()+' <small>บาท</small>';
+  document.getElementById('wPaid').innerHTML = S.paid.toLocaleString()+' <small>บาท</small>';
+}
+function addWalletRow(type, val, cls, chip){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>02 ก.ค. 2569</td><td>JOB-260702-0${150+Math.floor(Math.random()*800)}</td><td>${type}</td><td class="${cls}">${val}</td><td>${chip}</td>`;
+  document.getElementById('walletBody').prepend(tr);
+}
+function confetti(n, blue){
+  const icons = blue ? ['💙','✨','⭐','🔹'] : ['🎉','✨','🪙','💰','⭐'];
+  for(let i=0;i<n;i++){
+    const s = document.createElement('div'); s.className='confetti';
+    s.textContent = icons[Math.floor(Math.random()*icons.length)];
+    s.style.left = Math.random()*100+'vw';
+    s.style.fontSize = (13+Math.random()*15)+'px';
+    s.style.animationDuration = (2+Math.random()*2.2)+'s';
+    document.body.appendChild(s); setTimeout(()=>s.remove(), 4500);
+  }
+}
+
+/* ---------- leaderboard ---------- */
+const LB = {
+  today: [
+    ['คุณหมิว วรรณา','Alpha',6,620,['Top Contributor','']],
+    ['คุณเบียร์ ศักดิ์ชัย','Service',5,540,['New Job Booster','b']],
+    ['คุณต้น ปิยะ','Call Center',4,410,['Quality Lead Hero','g']],
+    ['คุณแพร สุภาพร','Alpha',3,300,['New Job Starter','b']],
+    ['คุณโอ๊ต ธนกร','Service',2,190,['New Job Starter','b']],
+  ],
+  week: [
+    ['คุณเบียร์ ศักดิ์ชัย','Service',21,2280,['ANC Growth Driver','']],
+    ['คุณหมิว วรรณา','Alpha',19,2040,['Top Contributor','']],
+    ['คุณแพร สุภาพร','Alpha',14,1450,['Quality Lead Hero','g']],
+    ['คุณต้น ปิยะ','Call Center',12,1230,['New Job Booster','b']],
+    ['คุณนก อารยา','Broker',9,880,['New Job Starter','b']],
+  ],
+  month: [
+    ['คุณหมิว วรรณา','Alpha',68,7150,['ANC Growth Driver','']],
+    ['คุณเบียร์ ศักดิ์ชัย','Service',64,6820,['ANC Growth Driver','']],
+    ['คุณนก อารยา','Broker',51,5390,['Top Contributor','']],
+    ['คุณต้น ปิยะ','Call Center',44,4610,['Quality Lead Hero','g']],
+    ['คุณแพร สุภาพร','Alpha',40,4120,['New Job Booster','b']],
+  ]
+};
+function lbTab(el, key){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active');
+  const tb = document.getElementById('lbBody'); tb.innerHTML='';
+  LB[key].forEach((r,i)=>{
+    const rk = i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkx';
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td><span class="rank-badge ${rk}">${i+1}</span></td><td>${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b> งาน</td><td class="amt-pt">${r[3].toLocaleString()}</td><td><span class="badge-tag ${r[4][1]}">${r[4][0]}</span></td></tr>`);
+  });
+}
+lbTab(document.querySelector('.tab'), 'today');
+
+/* ---------- admin render ---------- */
+function renderAdmin(){
+  const remaining = Math.max(0, S.budgetCap - S.used);
+  document.getElementById('aUsed').textContent = S.used.toLocaleString()+'฿';
+  document.getElementById('aRemain').textContent = remaining.toLocaleString()+'฿';
+  document.getElementById('aBudgetBar').style.width = (S.used/S.budgetCap*100)+'%';
+  document.getElementById('aGrand').textContent = S.grandClaimed ? 'ออกแล้ว' : 'ยังไม่ออก';
+  document.getElementById('aGrand').className = 'v ' + (S.grandClaimed ? 'gold' : 'ok');
+  document.getElementById('aMode').textContent = (S.bonusMode || remaining<=0) ? 'Bonus Point' : 'Cash Reward';
+  document.getElementById('aModeS').textContent = (S.bonusMode || remaining<=0)
+    ? 'งบเงินสดวันนี้ครบแล้ว — ระบบออกคะแนนสะสมแทน (ผู้ใช้เห็นเฉพาะข้อความเชิงบวก)'
+    : 'สลับเป็น Bonus Point อัตโนมัติเมื่องบหมด';
+  /* pool table */
+  const tb = document.getElementById('poolBody'); tb.innerHTML='';
+  S.bag.forEach(p=>{
+    const left = p.total - p.given;
+    const st = p.v===1000
+      ? (S.grandClaimed ? '<span class="chip normal">Grand Prize · ออกแล้ว</span>' : '<span class="chip approved">Grand Prize · พร้อมจ่าย</span>')
+      : (left>0 ? '<span class="chip approved">พร้อมจ่าย</span>' : '<span class="chip normal">หมดชั่วคราว</span>');
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td class="amt-gold">${p.v.toLocaleString()} ฿</td><td>${p.total}</td><td>${p.given}</td><td><b>${left}</b></td><td>${st}</td></tr>`);
+  });
+  const q = 47; document.getElementById('kpiActual').textContent = (S.used/q).toFixed(1)+' บาท/งาน';
+}
+
+/* submissions dummy */
+const SUBS = [
+  ['JOB-260702-0231','คุณแพร สุภาพร','Alpha','คุณวิชัย ม.','081-xxx-4521','1กข 567 กทม.','งานใหม่','—','normal','pending'],
+  ['JOB-260702-0228','คุณกอล์ฟ ธีรภัทร','Broker','คุณสมหญิง จ.','089-xxx-1234','ขค 1234 กทม.','งานใหม่','เบอร์ซ้ำ 4 ครั้ง','suspicious','pending'],
+  ['JOB-260702-0224','คุณต้น ปิยะ','Call Center','คุณอนันต์ ร.','062-xxx-8890','3ขจ 882 ชลบุรี','งานใหม่','—','normal','pending'],
+  ['JOB-260702-0219','คุณนก อารยา','Broker','คุณมานี พ.','095-xxx-3345','กข 1234 กทม.','งานใหม่','ทะเบียนซ้ำ','warning','pending'],
+  ['JOB-260702-0217','คุณโอ๊ต ธนกร','Service','ทดสอบ ระบบ','000-000-0000','ทดสอบ 01','งานใหม่','test data','blocked','rejected'],
+  ['JOB-260702-0212','คุณหมิว วรรณา','Alpha','คุณประเสริฐ ก.','086-xxx-7712','2ฒผ 449 นนทบุรี','งานใหม่','—','normal','approved'],
+];
+(function renderSubs(){
+  const tb = document.getElementById('subBody');
+  SUBS.forEach(s=>{
+    const fraudChip = `<span class="chip ${s[8]}">${s[8]}</span>`;
+    const stChip = s[9]==='approved' ? '<span class="chip approved">ผ่านเงื่อนไข</span>'
+                 : s[9]==='rejected' ? '<span class="chip rejected">ไม่ผ่าน</span>'
+                 : '<span class="chip pending">รอตรวจสอบ</span>';
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td><td>${s[4]}</td><td>${s[5]}</td><td>${s[6]}</td><td>${s[7]}</td><td>${fraudChip}</td><td class="stCell">${stChip}</td>
+      <td><button class="mini-btn ap" onclick="rowAction(this,'approved')">อนุมัติ</button> <button class="mini-btn rj" onclick="rowAction(this,'rejected')">ปฏิเสธ</button></td></tr>`);
+  });
+})();
+function rowAction(btn, st){
+  const cell = btn.closest('tr').querySelector('.stCell');
+  cell.innerHTML = st==='approved' ? '<span class="chip approved">ผ่านเงื่อนไข</span>' : '<span class="chip rejected">ไม่ผ่าน</span>';
+  toast(st==='approved' ? 'อนุมัติแล้ว · สร้าง reward token + audit log (เดโม่)' : 'ปฏิเสธแล้ว · บันทึก audit log (เดโม่)');
+}
+
+/* transactions dummy */
+const TXS = [
+  ['TXN-88412','02 ก.ค. 14:21','คุณหมิว วรรณา','JOB-260702-0212','100 ฿','approved','Admin A','รอบ 04 ก.ค.'],
+  ['TXN-88409','02 ก.ค. 13:56','คุณเบียร์ ศักดิ์ชัย','JOB-260702-0201','20 ฿','approved','Auto+Admin A','รอบ 04 ก.ค.'],
+  ['TXN-88403','02 ก.ค. 13:02','คุณต้น ปิยะ','JOB-260702-0188','300 ฿','pending','—','—'],
+  ['TXN-88398','02 ก.ค. 11:47','คุณนก อารยา','JOB-260702-0176','50 ฿','approved','Admin B','รอบ 04 ก.ค.'],
+  ['TXN-88391','02 ก.ค. 10:30','คุณแพร สุภาพร','JOB-260702-0159','200 ฿','pending','—','—'],
+  ['TXN-88386','02 ก.ค. 09:52','คุณโอ๊ต ธนกร','JOB-260702-0147','20 ฿','rejected','Admin A','—'],
+  ['TXN-88380','02 ก.ค. 09:15','คุณกิ๊ฟ ชนิดา','JOB-260702-0139','100 ฿','paid','Admin A','จ่ายแล้ว 27 มิ.ย.'],
+];
+(function renderTx(){
+  const tb = document.getElementById('txBody');
+  TXS.forEach(t=>tb.insertAdjacentHTML('beforeend', txRowHtml(t)));
+})();
+function txRowHtml(t){
+  const chip = `<span class="chip ${t[5]}">${t[5]==='pending'?'รอตรวจสอบ':t[5]==='approved'?'อนุมัติแล้ว':t[5]==='paid'?'จ่ายแล้ว':'ไม่ผ่านเงื่อนไข'}</span>`;
+  return `<tr><td>${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3]}</td><td class="amt-gold">${t[4]}</td><td>${chip}</td><td>${t[6]}</td><td>${t[7]}</td></tr>`;
+}
+let txn = 88413;
+function addTxRow(val){
+  document.getElementById('txBody').insertAdjacentHTML('afterbegin',
+    txRowHtml(['TXN-'+(txn++),'02 ก.ค. (ตอนนี้)','คุณสมชาย ใจดี','JOB-260702-0'+(150+Math.floor(Math.random()*800)), val, 'pending','—','—']));
+}
+
+/* admin actions */
+function togglePause(){
+  S.paused = !S.paused;
+  const a = document.getElementById('adminAlert');
+  document.getElementById('pauseBtn').textContent = S.paused ? '▶ Resume Campaign' : '⏸ Pause Campaign';
+  a.classList.toggle('show', S.paused);
+  if(S.paused) a.textContent = '⏸ แคมเปญถูกพักชั่วคราว — ระบบหยุดออก token ใหม่ แต่ยังรับแจ้งงานตามปกติ (ผู้ใช้ไม่เห็นข้อความเชิงลบ)';
+  toast(S.paused ? 'Pause campaign แล้ว · audit log (เดโม่)' : 'Resume campaign แล้ว (เดโม่)');
+}
+function emergencyStop(){
+  const a = document.getElementById('adminAlert');
+  a.classList.add('show');
+  a.textContent = '🛑 EMERGENCY STOP — หยุดแจกรางวัลเงินสดทันที ระบบสลับเป็น Bonus Point Mode ให้ผู้ใช้โดยอัตโนมัติ';
+  setBonusMode(true); document.getElementById('swBonus').checked = true;
+  toast('Emergency stop ทำงานแล้ว · สลับเป็น Bonus Point Mode (เดโม่)');
+}
+
+/* toast */
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+renderUser(); renderAdmin();
+</script>
+</body>
+</html>
